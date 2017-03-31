@@ -197,5 +197,15 @@ class RRulesCheck extends Specification with ScalaCheck {
         toWeekday(result2.dayOfWeek().get()) must_== wd
       }
     }
+
+    "serializer" in {
+      RRule.apply(bizDays.toString) must beEqualTo(bizDays)
+      RRule.apply(bizEoms.toString) must beEqualTo(bizEoms)
+      RRule.apply(bizBoms.toString) must beEqualTo(bizBoms)
+      RRule.apply(bizEoqs.toString) must beEqualTo(bizEoqs)
+      RRule.apply(bizBoqs.toString) must beEqualTo(bizBoqs)
+      RRule.apply(eoms.toString) must beEqualTo(eoms)
+      RRule.apply(boms.toString) must beEqualTo(boms)
+    }
   }
 }

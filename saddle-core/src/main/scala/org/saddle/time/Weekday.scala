@@ -42,6 +42,18 @@ object Weekday {
    */
 
   implicit def w2wn(w: Weekday) = WeekdayNum(0, w)
+
+  def fromICal(wkst: com.google.ical.values.Weekday): Weekday = {
+    wkst match {
+      case com.google.ical.values.Weekday.SU => SU
+      case com.google.ical.values.Weekday.MO => MO
+      case com.google.ical.values.Weekday.TU => TU
+      case com.google.ical.values.Weekday.WE => WE
+      case com.google.ical.values.Weekday.TH => TH
+      case com.google.ical.values.Weekday.FR => FR
+      case com.google.ical.values.Weekday.SA => SA
+    }
+  }
 }
 
 case object SU extends Weekday
@@ -62,4 +74,10 @@ case class WeekdayNum(n: Int, d: Weekday) {
     new com.google.ical.values.WeekdayNum(n, d.toICal)
 
   override def toString = "%s(%d)" format (d, n)
+}
+
+object WeekdayNum {
+  def apply(wdn: com.google.ical.values.WeekdayNum): WeekdayNum = {
+    WeekdayNum(wdn.num, Weekday.fromICal(wdn.wday))
+  }
 }

@@ -16,9 +16,10 @@
 
 package org.saddle.time
 
-import org.joda.time.{Seconds, Days, DateTimeZone, DateTime}
+import com.google.ical.values.DateValue
+import org.joda.time.{Days, DateTimeZone, DateTime}
 import scala.collection.JavaConversions._
-import com.google.ical.iter.{RecurrenceIterator, RecurrenceIteratorFactory}
+import com.google.ical.iter.RecurrenceIteratorFactory
 import com.google.ical.compat.jodatime.DateTimeIteratorFactory
 import org.saddle.Index
 
@@ -271,4 +272,32 @@ case class RRule private (freq: Frequency = DAILY,
 
 object RRule {
   def apply(f: Frequency): RRule = new RRule(freq = f)
+
+  def apply(ical: String): RRule = {
+    val icRRule = new com.google.ical.values.RRule(ical)
+
+    new RRule(
+      Frequency.fromICal(icRRule.getFreq),
+      icRRule.getInterval,
+      if (icRRule.getWkSt != null) Some(Weekday.fromICal(icRRule.getWkSt)) else None,
+      if (icRRule.getCount > 0) Some(icRRule.getCount) else None,
+      if (icRRule.getUntil != null) Some(fromDateValueToJoda(icRRule.getUntil)) else None,
+      icRRule.getBySetPos.toList,
+      icRRule.getByMonth.toList,
+      icRRule.getByMonthDay.toList,
+      icRRule.getByYearDay.toList,
+      icRRule.getByWeekNo.toList,
+      icRRule.getByDay.toList.map( WeekdayNum(_) ),
+      icRRule.getByHour.toList,
+      icRRule.getByMinute.toList,
+      icRRule.getBySecond.toList,
+      TZ_LOCAL,
+      List.empty,
+      List.empty)
+  }
+
+  def fromDateValueToJoda(dtVal: DateValue): DateTime = {
+    new DateTime()
+      .withDate(dtVal.year(), dtVal.month(), dtVal.day())
+  }
 }

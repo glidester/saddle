@@ -16,7 +16,7 @@
 
 package org.saddle.time
 
-import org.joda.time.{Period, Duration}
+import org.joda.time.Period
 
 /**
  * Enumeration of frequency base for utilizing with an RRule
@@ -50,3 +50,15 @@ case object DAILY extends Frequency
 case object WEEKLY extends Frequency
 case object MONTHLY extends Frequency
 case object YEARLY extends Frequency
+
+object Frequency {
+  def fromICal(freq: com.google.ical.values.Frequency) = freq match {
+    case com.google.ical.values.Frequency.SECONDLY => SECONDLY
+    case com.google.ical.values.Frequency.MINUTELY => MINUTELY
+    case com.google.ical.values.Frequency.HOURLY => HOURLY
+    case com.google.ical.values.Frequency.DAILY => DAILY
+    case com.google.ical.values.Frequency.WEEKLY => WEEKLY
+    case com.google.ical.values.Frequency.MONTHLY => MONTHLY
+    case com.google.ical.values.Frequency.YEARLY => YEARLY
+  }
+}
